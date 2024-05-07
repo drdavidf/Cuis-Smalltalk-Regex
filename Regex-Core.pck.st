@@ -1,6 +1,6 @@
-'From Cuis6.3 [latest update: #6349] on 7 May 2024 at 3:05:03 pm'!
+'From Cuis6.3 [latest update: #6349] on 7 May 2024 at 7:18:52 pm'!
 'Description Please enter a description for this package '!
-!provides: 'Regex-Core' 1 5!
+!provides: 'Regex-Core' 1 6!
 !requires: 'Cuis-Base' 50 4689 nil!
 SystemOrganization addCategory: #'Regex-Core'!
 SystemOrganization addCategory: #'Regex-Core-Exceptions'!
@@ -642,7 +642,7 @@ nonMethodPredicateTester
 			RxParser doHandlingMessageNotUnderstood:
 				[p contains: [:sel | (char perform: sel) not]]]]! !
 
-!RxMatchOptimizer methodsFor: 'private' stamp: 'vb 4/11/09 21:56'!
+!RxMatchOptimizer methodsFor: 'private' stamp: 'Install-Xray 5/7/2024 19:18:33'!
 determineTestMethod
 	"Answer a block closure that will work as a can-match predicate.
 	Answer nil if no viable optimization is possible (too many chars would
@@ -650,7 +650,7 @@ determineTestMethod
 
 	| testers |
 	(conditions includes: #any) ifTrue: [^nil].
-	testers := OrderedCollection new: 5.
+	testers := OrderedCollection new.
 	#(#prefixTester #nonPrefixTester #conditionTester #methodPredicateTester #nonMethodPredicateTester #predicateTester #nonPredicateTester)
 		do: 
 			[:selector | 
@@ -726,7 +726,7 @@ prefixTester
 				ifTrue: [[:char :matcher | p includes: char asUppercase]]
 				ifFalse: [[:char :matcher | p includes: char]]]! !
 
-!RxMatchOptimizer methodsFor: 'initialize-release' stamp: 'vb 4/11/09 21:56'!
+!RxMatchOptimizer methodsFor: 'initialize-release' stamp: 'Install-Xray 5/7/2024 19:18:20'!
 initialize: aRegex ignoreCase: aBoolean 
 	"Set `testMethod' variable to a can-match predicate block:
 	two-argument block which accepts a lookahead character
@@ -735,13 +735,13 @@ initialize: aRegex ignoreCase: aBoolean
 	lookahead. "
 
 	ignoreCase := aBoolean.
-	prefixes := Set new: 10.
-	nonPrefixes := Set new: 10.
-	conditions := Set new: 3.
-	methodPredicates := Set new: 3.
-	nonMethodPredicates := Set new: 3.
-	predicates := Set new: 3.
-	nonPredicates := Set new: 3.
+	prefixes := Set new.
+	nonPrefixes := Set new.
+	conditions := Set new.
+	methodPredicates := Set new.
+	nonMethodPredicates := Set new.
+	predicates := Set new.
+	nonPredicates := Set new.
 	aRegex dispatchTo: self.	"If the whole expression is nullable, 
 		end-of-line is an implicit can-match condition!!"
 	aRegex isNullable ifTrue: [conditions add: #atEndOfLine].
