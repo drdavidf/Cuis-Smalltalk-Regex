@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4689] on 2 August 2021 at 7:50:22 pm'!
+'From Cuis6.3 [latest update: #6349] on 7 May 2024 at 3:05:03 pm'!
 'Description Please enter a description for this package '!
-!provides: 'Regex-Core' 1 4!
+!provides: 'Regex-Core' 1 5!
 !requires: 'Cuis-Base' 50 4689 nil!
 SystemOrganization addCategory: #'Regex-Core'!
 SystemOrganization addCategory: #'Regex-Core-Exceptions'!
@@ -3585,13 +3585,13 @@ initializeNamedClassSelectors
 		at: 'upper' put: #beUppercase;
 		at: 'xdigit' put: #beHexDigit! !
 
-!RxsRange methodsFor: 'accessing' stamp: 'vb 4/11/09 21:56'!
+!RxsRange methodsFor: 'accessing' stamp: 'Install-Xray 5/7/2024 15:04:56'!
 enumerateTo: aSet ignoringCase: aBoolean
 	"Add all of the elements I represent to the collection."
 
 	first asInteger to: last asInteger do:
 		[:charCode | | character |
-		character := charCode asCharacter.
+		character := Character codePoint: charCode.
 		aBoolean
 		ifTrue: 
 			[aSet 
@@ -3642,6 +3642,21 @@ initializeBranch: aBranch regex: aRegex
 isNullable
 
 	^branch isNullable or: [regex notNil and: [regex isNullable]]! !
+
+!Character methodsFor: '*Regex-Core' stamp: 'NM 8/2/2021 18:34:24'!
+asInteger
+	"From Squeak"
+	"Answer the receiver's character code."
+	<primitive: 171>
+	^self primitiveFailed! !
+
+!Character methodsFor: '*Regex-Core' stamp: 'NM 8/2/2021 18:32:35'!
+sameAs: aCharacter
+	"From Squeak Answer whether the receiver is equal to aCharacter, ignoring case"
+	self == aCharacter ifTrue: [ ^true ].
+	^self asLowercase == aCharacter asLowercase
+	
+! !
 
 !Collection methodsFor: '*Regex-Core' stamp: 'NM 8/2/2021 18:47:18'!
 contains: aBlock
@@ -3741,21 +3756,6 @@ regex: rxString matchesDo: aBlock
 search: aString
 	"compatibility method to make regexp and strings work polymorphicly"
 	^ aString includesSubString: self! !
-
-!Character methodsFor: '*Regex-Core' stamp: 'NM 8/2/2021 18:34:24'!
-asInteger
-	"From Squeak"
-	"Answer the receiver's character code."
-	<primitive: 171>
-	^self primitiveFailed! !
-
-!Character methodsFor: '*Regex-Core' stamp: 'NM 8/2/2021 18:32:35'!
-sameAs: aCharacter
-	"From Squeak Answer whether the receiver is equal to aCharacter, ignoring case"
-	self == aCharacter ifTrue: [ ^true ].
-	^self asLowercase == aCharacter asLowercase
-	
-! !
 RxMatcher initialize!
 RxParser initialize!
 RxsPredicate initialize!
