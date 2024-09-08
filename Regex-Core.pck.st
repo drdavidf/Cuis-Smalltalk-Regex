@@ -1,6 +1,6 @@
-'From Cuis6.3 [latest update: #6349] on 7 May 2024 at 7:18:52 pm'!
+'From Cuis7.1 [latest update: #6676] on 7 September 2024 at 1:43:45 pm'!
 'Description Please enter a description for this package '!
-!provides: 'Regex-Core' 1 6!
+!provides: 'Regex-Core' 1 7!
 !requires: 'Cuis-Base' 50 4689 nil!
 SystemOrganization addCategory: #'Regex-Core'!
 SystemOrganization addCategory: #'Regex-Core-Exceptions'!
@@ -3643,6 +3643,105 @@ isNullable
 
 	^branch isNullable or: [regex notNil and: [regex isNullable]]! !
 
+!Collection methodsFor: '*Regex-Core' stamp: 'NM 8/2/2021 18:47:18'!
+contains: aBlock
+       "From Squeak. "
+	"VW compatibility"
+	^self anySatisfy: aBlock! !
+
+!CharacterSequence methodsFor: '*Regex-Core' stamp: 'DF 9/7/2024 13:42:21'!
+allRangesOfRegexMatches: rxString
+
+	^rxString asRegex matchingRangesIn: self! !
+
+!CharacterSequence methodsFor: '*Regex-Core' stamp: 'DF 9/7/2024 13:42:27'!
+allRegexMatches: rxString
+
+	^rxString asRegex matchesIn: self! !
+
+!CharacterSequence methodsFor: '*Regex-Core' stamp: 'DF 9/7/2024 13:42:32'!
+asRegex
+	"Compile the receiver as a regex matcher. May raise RxParser>>syntaxErrorSignal
+	or RxParser>>compilationErrorSignal.
+	This is a part of the Regular Expression Matcher package, (c) 1996, 1999 Vassili Bykov.
+	Refer to `documentation' protocol of RxParser class for details."
+
+	^RxParser preferredMatcherClass for: (RxParser new parse: self)! !
+
+!CharacterSequence methodsFor: '*Regex-Core' stamp: 'DF 9/7/2024 13:42:37'!
+asRegexIgnoringCase
+	"Compile the receiver as a regex matcher. May raise RxParser>>syntaxErrorSignal
+	or RxParser>>compilationErrorSignal.
+	This is a part of the Regular Expression Matcher package, (c) 1996, 1999 Vassili Bykov.
+	Refer to `documentation' protocol of RxParser class for details."
+
+	^RxParser preferredMatcherClass
+		for: (RxParser new parse: self)
+		ignoreCase: true! !
+
+!CharacterSequence methodsFor: '*Regex-Core' stamp: 'DF 9/7/2024 13:42:42'!
+copyWithRegex: rxString matchesReplacedWith: aString
+
+	^rxString asRegex
+		copy: self replacingMatchesWith: aString! !
+
+!CharacterSequence methodsFor: '*Regex-Core' stamp: 'DF 9/7/2024 13:42:47'!
+copyWithRegex: rxString matchesTranslatedUsing: aBlock
+
+	^rxString asRegex
+		copy: self translatingMatchesUsing: aBlock! !
+
+!CharacterSequence methodsFor: '*Regex-Core' stamp: 'DF 9/7/2024 13:42:51'!
+matchesRegex: regexString
+	"Test if the receiver matches a regex.  May raise RxParser>>regexErrorSignal or
+	child signals.
+	This is a part of the Regular Expression Matcher package, (c) 1996, 1999 Vassili Bykov.
+	Refer to `documentation' protocol of RxParser class for details."
+
+	^regexString asRegex matches: self! !
+
+!CharacterSequence methodsFor: '*Regex-Core' stamp: 'DF 9/7/2024 13:42:56'!
+matchesRegexIgnoringCase: regexString
+	"Test if the receiver matches a regex.  May raise RxParser>>regexErrorSignal or
+	child signals.
+	This is a part of the Regular Expression Matcher package, (c) 1996, 1999 Vassili Bykov.
+	Refer to `documentation' protocol of RxParser class for details."
+
+	^regexString asRegexIgnoringCase matches: self! !
+
+!CharacterSequence methodsFor: '*Regex-Core' stamp: 'DF 9/7/2024 13:43:00'!
+prefixMatchesRegex: regexString
+	"Test if the receiver's prefix matches a regex.	
+	May raise RxParser class>>regexErrorSignal or child signals.
+	This is a part of the Regular Expression Matcher package, (c) 1996, 1999 Vassili Bykov.
+	Refer to `documentation' protocol of RxParser class for details."
+
+	^regexString asRegex matchesPrefix: self! !
+
+!CharacterSequence methodsFor: '*Regex-Core' stamp: 'DF 9/7/2024 13:43:05'!
+prefixMatchesRegexIgnoringCase: regexString
+	"Test if the receiver's prefix matches a regex.	
+	May raise RxParser class>>regexErrorSignal or child signals.
+	This is a part of the Regular Expression Matcher package, (c) 1996, 1999 Vassili Bykov.
+	Refer to `documentation' protocol of RxParser class for details."
+
+	^regexString asRegexIgnoringCase matchesPrefix: self! !
+
+!CharacterSequence methodsFor: '*Regex-Core' stamp: 'DF 9/7/2024 13:43:09'!
+regex: rxString matchesCollect: aBlock
+
+	^rxString asRegex matchesIn: self collect: aBlock! !
+
+!CharacterSequence methodsFor: '*Regex-Core' stamp: 'DF 9/7/2024 13:43:14'!
+regex: rxString matchesDo: aBlock
+
+	^rxString asRegex matchesIn: self do: aBlock! !
+
+!CharacterSequence methodsFor: '*Regex-Core' stamp: 'DF 9/7/2024 13:43:23'!
+search: aString
+	"compatibility method to make regexp and strings work polymorphicly"
+	^ aString includesSubString: self! !
+
 !Character methodsFor: '*Regex-Core' stamp: 'NM 8/2/2021 18:34:24'!
 asInteger
 	"From Squeak"
@@ -3657,105 +3756,6 @@ sameAs: aCharacter
 	^self asLowercase == aCharacter asLowercase
 	
 ! !
-
-!Collection methodsFor: '*Regex-Core' stamp: 'NM 8/2/2021 18:47:18'!
-contains: aBlock
-       "From Squeak. "
-	"VW compatibility"
-	^self anySatisfy: aBlock! !
-
-!String methodsFor: '*Regex-Core' stamp: 'gsa 12/20/2012 10:31'!
-allRangesOfRegexMatches: rxString
-
-	^rxString asRegex matchingRangesIn: self! !
-
-!String methodsFor: '*Regex-Core' stamp: 'gsa 12/20/2012 10:32'!
-allRegexMatches: rxString
-
-	^rxString asRegex matchesIn: self! !
-
-!String methodsFor: '*Regex-Core' stamp: 'gsa 12/20/2012 10:32'!
-asRegex
-	"Compile the receiver as a regex matcher. May raise RxParser>>syntaxErrorSignal
-	or RxParser>>compilationErrorSignal.
-	This is a part of the Regular Expression Matcher package, (c) 1996, 1999 Vassili Bykov.
-	Refer to `documentation' protocol of RxParser class for details."
-
-	^RxParser preferredMatcherClass for: (RxParser new parse: self)! !
-
-!String methodsFor: '*Regex-Core' stamp: 'gsa 12/20/2012 10:33'!
-asRegexIgnoringCase
-	"Compile the receiver as a regex matcher. May raise RxParser>>syntaxErrorSignal
-	or RxParser>>compilationErrorSignal.
-	This is a part of the Regular Expression Matcher package, (c) 1996, 1999 Vassili Bykov.
-	Refer to `documentation' protocol of RxParser class for details."
-
-	^RxParser preferredMatcherClass
-		for: (RxParser new parse: self)
-		ignoreCase: true! !
-
-!String methodsFor: '*Regex-Core' stamp: 'gsa 12/20/2012 10:33'!
-copyWithRegex: rxString matchesReplacedWith: aString
-
-	^rxString asRegex
-		copy: self replacingMatchesWith: aString! !
-
-!String methodsFor: '*Regex-Core' stamp: 'gsa 12/20/2012 10:33'!
-copyWithRegex: rxString matchesTranslatedUsing: aBlock
-
-	^rxString asRegex
-		copy: self translatingMatchesUsing: aBlock! !
-
-!String methodsFor: '*Regex-Core' stamp: 'gsa 12/20/2012 10:34'!
-matchesRegex: regexString
-	"Test if the receiver matches a regex.  May raise RxParser>>regexErrorSignal or
-	child signals.
-	This is a part of the Regular Expression Matcher package, (c) 1996, 1999 Vassili Bykov.
-	Refer to `documentation' protocol of RxParser class for details."
-
-	^regexString asRegex matches: self! !
-
-!String methodsFor: '*Regex-Core' stamp: 'gsa 12/20/2012 10:34'!
-matchesRegexIgnoringCase: regexString
-	"Test if the receiver matches a regex.  May raise RxParser>>regexErrorSignal or
-	child signals.
-	This is a part of the Regular Expression Matcher package, (c) 1996, 1999 Vassili Bykov.
-	Refer to `documentation' protocol of RxParser class for details."
-
-	^regexString asRegexIgnoringCase matches: self! !
-
-!String methodsFor: '*Regex-Core' stamp: 'gsa 12/20/2012 10:34'!
-prefixMatchesRegex: regexString
-	"Test if the receiver's prefix matches a regex.	
-	May raise RxParser class>>regexErrorSignal or child signals.
-	This is a part of the Regular Expression Matcher package, (c) 1996, 1999 Vassili Bykov.
-	Refer to `documentation' protocol of RxParser class for details."
-
-	^regexString asRegex matchesPrefix: self! !
-
-!String methodsFor: '*Regex-Core' stamp: 'gsa 12/20/2012 10:35'!
-prefixMatchesRegexIgnoringCase: regexString
-	"Test if the receiver's prefix matches a regex.	
-	May raise RxParser class>>regexErrorSignal or child signals.
-	This is a part of the Regular Expression Matcher package, (c) 1996, 1999 Vassili Bykov.
-	Refer to `documentation' protocol of RxParser class for details."
-
-	^regexString asRegexIgnoringCase matchesPrefix: self! !
-
-!String methodsFor: '*Regex-Core' stamp: 'gsa 12/20/2012 10:35'!
-regex: rxString matchesCollect: aBlock
-
-	^rxString asRegex matchesIn: self collect: aBlock! !
-
-!String methodsFor: '*Regex-Core' stamp: 'gsa 12/20/2012 10:35'!
-regex: rxString matchesDo: aBlock
-
-	^rxString asRegex matchesIn: self do: aBlock! !
-
-!String methodsFor: '*Regex-Core' stamp: 'gsa 12/20/2012 10:36'!
-search: aString
-	"compatibility method to make regexp and strings work polymorphicly"
-	^ aString includesSubString: self! !
 RxMatcher initialize!
 RxParser initialize!
 RxsPredicate initialize!
