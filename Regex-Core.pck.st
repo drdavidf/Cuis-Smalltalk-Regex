@@ -1,6 +1,6 @@
-'From Cuis7.1 [latest update: #6676] on 6 October 2024 at 7:19:53 pm'!
+'From Cuis7.1 [latest update: #6676] on 6 October 2024 at 10:14:45 pm'!
 'Description Please enter a description for this package '!
-!provides: 'Regex-Core' 1 9!
+!provides: 'Regex-Core' 1 10!
 !requires: 'Cuis-Base' 50 4689 nil!
 SystemOrganization addCategory: #'Regex-Core'!
 SystemOrganization addCategory: #'Regex-Core-Exceptions'!
@@ -1179,7 +1179,7 @@ copyStream: aStream to: writeStream replacingMatchesWith: aString
 	aStream position: searchStart.
 	[aStream atEnd] whileFalse: [writeStream nextPut: aStream next]! !
 
-!RxMatcher methodsFor: 'match enumeration' stamp: 'DF 10/6/2024 19:17:28'!
+!RxMatcher methodsFor: 'match enumeration' stamp: 'DF 10/6/2024 22:14:37'!
 copyStream: aStream to: writeStream translatingMatchesUsing: aBlock
 	"Copy the contents of <aStream> on the <writeStream>, except for the matches. For each match, evaluate <aBlock> passing the matched substring as the argument.  Expect the block to answer a String, and write the answer to <writeStream> in place of the match."
 
@@ -1191,8 +1191,7 @@ copyStream: aStream to: writeStream translatingMatchesUsing: aBlock
 		[matchStart := (self subBeginning: 1) first.
 		matchEnd := (self subEnd: 1) first.
 		aStream position: searchStart.
-		searchStart to: matchStart - 1 do:
-			[:ignoredPos | writeStream nextPut: aStream next].
+		writeStream nextPutAll: (aStream next: matchStart - searchStart).		
 		match := (aStream collectionSpecies new: matchEnd - matchStart + 1) writeStream.
 		matchStart to: matchEnd - 1 do:
 			[:ignoredPos | match nextPut: aStream next].
