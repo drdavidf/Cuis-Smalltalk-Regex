@@ -1,6 +1,6 @@
-'From Cuis7.1 [latest update: #6676] on 7 September 2024 at 1:43:45 pm'!
+'From Cuis7.1 [latest update: #6676] on 6 October 2024 at 7:19:53 pm'!
 'Description Please enter a description for this package '!
-!provides: 'Regex-Core' 1 7!
+!provides: 'Regex-Core' 1 9!
 !requires: 'Cuis-Base' 50 4689 nil!
 SystemOrganization addCategory: #'Regex-Core'!
 SystemOrganization addCategory: #'Regex-Core-Exceptions'!
@@ -952,10 +952,10 @@ tryMatch
 	"this is a duplicate"
 	^ lastResult := false! !
 
-!RxMatcher methodsFor: 'testing' stamp: 'lr 1/15/2010 21:12'!
+!RxMatcher methodsFor: 'testing' stamp: 'DF 9/9/2024 17:58:07'!
 atBeginningOfLine
 
-	^self position = 0 or: [self lastChar = Cr]! !
+	^self position = 0 or: [self lastChar = Lf]! !
 
 !RxMatcher methodsFor: 'testing' stamp: 'lr 1/15/2010 21:12'!
 atBeginningOfWord
@@ -963,10 +963,10 @@ atBeginningOfWord
 	^(self isWordChar: self lastChar) not
 		and: [self isWordChar: stream peek]! !
 
-!RxMatcher methodsFor: 'testing' stamp: 'vb 4/11/09 21:56'!
+!RxMatcher methodsFor: 'testing' stamp: 'DF 9/9/2024 18:04:03'!
 atEndOfLine
 
-	^self atEnd or: [stream peek = Cr]! !
+	^self atEnd or: [stream peek = Lf]! !
 
 !RxMatcher methodsFor: 'testing' stamp: 'lr 1/15/2010 21:12'!
 atEndOfWord
@@ -1145,12 +1145,12 @@ copy: aString replacingMatchesWith: replacementString
 		replacingMatchesWith: replacementString.
 	^answer contents! !
 
-!RxMatcher methodsFor: 'match enumeration' stamp: 'vb 4/11/09 21:56'!
+!RxMatcher methodsFor: 'match enumeration' stamp: 'DF 10/6/2024 19:19:08'!
 copy: aString translatingMatchesUsing: aBlock
 	"Copy <aString>, except for the matches. For each match, evaluate <aBlock> passing the matched substring as the argument.  Expect the block to answer a String, and replace the match with the answer."
 
 	| answer |
-	answer := (String new: 40) writeStream.
+	answer := (aString class new: 40) writeStream.
 	self copyStream: aString readStream to: answer translatingMatchesUsing: aBlock.
 	^answer contents! !
 
@@ -1179,7 +1179,7 @@ copyStream: aStream to: writeStream replacingMatchesWith: aString
 	aStream position: searchStart.
 	[aStream atEnd] whileFalse: [writeStream nextPut: aStream next]! !
 
-!RxMatcher methodsFor: 'match enumeration' stamp: 'lr 1/15/2010 21:45'!
+!RxMatcher methodsFor: 'match enumeration' stamp: 'DF 10/6/2024 19:17:28'!
 copyStream: aStream to: writeStream translatingMatchesUsing: aBlock
 	"Copy the contents of <aStream> on the <writeStream>, except for the matches. For each match, evaluate <aBlock> passing the matched substring as the argument.  Expect the block to answer a String, and write the answer to <writeStream> in place of the match."
 
@@ -1193,7 +1193,7 @@ copyStream: aStream to: writeStream translatingMatchesUsing: aBlock
 		aStream position: searchStart.
 		searchStart to: matchStart - 1 do:
 			[:ignoredPos | writeStream nextPut: aStream next].
-		match := (String new: matchEnd - matchStart + 1) writeStream.
+		match := (aStream collectionSpecies new: matchEnd - matchStart + 1) writeStream.
 		matchStart to: matchEnd - 1 do:
 			[:ignoredPos | match nextPut: aStream next].
 		writeStream nextPutAll: (aBlock value: match contents).
@@ -3741,13 +3741,6 @@ regex: rxString matchesDo: aBlock
 search: aString
 	"compatibility method to make regexp and strings work polymorphicly"
 	^ aString includesSubString: self! !
-
-!Character methodsFor: '*Regex-Core' stamp: 'NM 8/2/2021 18:34:24'!
-asInteger
-	"From Squeak"
-	"Answer the receiver's character code."
-	<primitive: 171>
-	^self primitiveFailed! !
 
 !Character methodsFor: '*Regex-Core' stamp: 'NM 8/2/2021 18:32:35'!
 sameAs: aCharacter
