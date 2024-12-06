@@ -1,6 +1,6 @@
-'From Cuis7.1 [latest update: #6676] on 6 October 2024 at 10:36:55 pm'!
+'From Cuis7.1 [latest update: #6891] on 6 December 2024 at 5:36:28 pm'!
 'Description Please enter a description for this package '!
-!provides: 'Regex-Core' 1 11!
+!provides: 'Regex-Core' 1 12!
 !requires: 'Cuis-Base' 50 4689 nil!
 SystemOrganization addCategory: #'Regex-Core'!
 SystemOrganization addCategory: #'Regex-Core-Exceptions'!
@@ -491,10 +491,10 @@ addChar: aChar
 
 	elements add: (RxsCharacter with: aChar)! !
 
-!RxCharSetParser methodsFor: 'parsing' stamp: 'vb 4/11/09 21:56'!
+!RxCharSetParser methodsFor: 'parsing' stamp: 'Install-Xray 12/6/2024 17:35:56'!
 addRangeFrom: firstChar to: lastChar
 
-	firstChar asInteger > lastChar asInteger ifTrue:
+	firstChar codePoint > lastChar codePoint ifTrue:
 		[RxParser signalSyntaxException: ' bad character range'].
 	elements add: (RxsRange from: firstChar to: lastChar)! !
 
@@ -3584,11 +3584,11 @@ initializeNamedClassSelectors
 		at: 'upper' put: #beUppercase;
 		at: 'xdigit' put: #beHexDigit! !
 
-!RxsRange methodsFor: 'accessing' stamp: 'Install-Xray 5/7/2024 15:04:56'!
+!RxsRange methodsFor: 'accessing' stamp: 'Install-Xray 12/6/2024 17:36:08'!
 enumerateTo: aSet ignoringCase: aBoolean
 	"Add all of the elements I represent to the collection."
 
-	first asInteger to: last asInteger do:
+	first codePoint to: last codePoint do:
 		[:charCode | | character |
 		character := Character codePoint: charCode.
 		aBoolean
